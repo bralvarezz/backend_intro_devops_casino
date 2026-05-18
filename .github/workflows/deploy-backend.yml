@@ -38,7 +38,7 @@ jobs:
       - name: Desplegar en EC2-backend
         uses: appleboy/ssh-action@v1
         env:
-          IMAGE: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION .amazonaws.com/casino-backend:latest
+          IMAGE: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/casino-backend:latest
         with:
           host: ${{ secrets.EC2_BACKEND_HOST }}
           username: ec2-user
