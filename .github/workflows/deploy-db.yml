@@ -40,6 +40,6 @@ jobs:
 
       - name: Desplegar Base de Datos en EKS con Kubectl
         run: |
-          kubectl apply -f k8s/postgres-deployment.yaml
+          kubectl apply -f k8s/db-deployment.yaml
 
           kubectl rollout restart deployment/vidal-casino-db || true
