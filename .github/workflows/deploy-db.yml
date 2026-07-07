@@ -26,11 +26,11 @@ jobs:
         with:
           mask-password: 'true'
 
-      - name: Build & push casino-db
+      - name: Build & push vidal-casino-db
         env:
           REGISTRY: ${{ steps.ecr.outputs.registry }}
         run: |
-          IMAGE=$REGISTRY/casino-db
+          IMAGE=$REGISTRY/vidal-casino-db
           docker build -t $IMAGE:${{ github.sha }} -t $IMAGE:latest ./db
           docker push $IMAGE:${{ github.sha }}
           docker push $IMAGE:latest
@@ -42,4 +42,4 @@ jobs:
         run: |
           kubectl apply -f k8s/postgres-deployment.yaml
 
-          kubectl rollout restart deployment/casino-db || true
+          kubectl rollout restart deployment/vidal-casino-db || true
