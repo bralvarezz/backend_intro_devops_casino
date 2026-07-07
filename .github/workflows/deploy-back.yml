@@ -41,6 +41,6 @@ jobs:
 
       - name: Desplegar Backend en EKS con Kubectl
         run: |
+          kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/backend-deployment.yaml
-
           kubectl rollout restart deployment/vidal-casino-backend
