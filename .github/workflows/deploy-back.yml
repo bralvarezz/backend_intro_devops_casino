@@ -3,7 +3,7 @@ name: Build & Deploy backend
 on:
   workflow_dispatch:         
   push:
-    branches: [ main, dev]
+    branches: [ main, dev ]
     paths-ignore: [ 'db/**' ] 
 
 jobs:
@@ -35,28 +35,12 @@ jobs:
           docker push $IMAGE:${{ github.sha }}
           docker push $IMAGE:latest
 
-      - name: Desplegar en EC2-backend
-        uses: appleboy/ssh-action@v1
-        env:
-          IMAGE: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/casino-backend:latest
-        with:
-          host: ${{ secrets.EC2_BACKEND_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          envs: IMAGE
-          # ... (Pasos previos idénticos al Paso 12.1 de tu guía)
-          script: |
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-              | docker login --username AWS --password-stdin \
-                ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            docker pull "$IMAGE"
-            docker rm -f casino-backend || true
-            docker run -d --name casino-backend --restart unless-stopped \
-              -p 3000:3000 \
-              -e DB_HOST=${{ secrets.DB_HOST_PRIVATE }} \
-              -e DB_USER=casino \
-              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              -e DB_NAME=casino_db \
-              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-              -e CORS_ORIGIN="*" \
-              "$IMAGE"
+      - name: Actualizar Kubeconfig para Amazon EKS
+        run: |
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name casino-eks
+
+      - name: Desplegar Backend en EKS con Kubectl
+        run: |
+          kubectl apply -f k8s/backend-deployment.yaml
+
+          kubectl rollout restart deployment/casino-backend

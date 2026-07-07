@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: casino-backend
+  labels:
+    app: casino-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: casino-backend
+  template:
+    metadata:
+      labels:
+        app: casino-backend
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: casino-backend
+
+      containers:
+        - name: casino-backend
+          image: 631932931672.dkr.ecr.us-east-1.amazonaws.com/casino-backend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              value: "db-service"      
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "casino"
+            - name: DB_PASSWORD
+              value: "casino"
+            - name: DB_NAME
+              value: "casino_db"
+            - name: JWT_SECRET
+              value: "clave-secreta-vidal-casino" 
+            - name: CORS_ORIGIN
+              value: "*"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: ClusterIP                    
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: casino-backend
