@@ -21,11 +21,20 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_USER
-              value: "casino"
+              valueFrom:
+                configMapKeyRef:
+                  name: casino-config
+                  key: DB_USER
             - name: POSTGRES_PASSWORD
-              value: "casino" 
+              valueFrom:
+                configMapKeyRef:
+                  name: casino-config
+                  key: DB_PASSWORD
             - name: POSTGRES_DB
-              value: "casino_db"
+              valueFrom:
+                configMapKeyRef:
+                  name: casino-config
+                  key: DB_NAME
           volumeMounts:
             - name: pg-data
               mountPath: /var/lib/postgresql/data

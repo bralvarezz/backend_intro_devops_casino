@@ -29,20 +29,33 @@ spec:
             - containerPort: 3000
           env:
             - name: DB_HOST
-              value: "db-service"      
+              value: "db-service"  
             - name: DB_PORT
               value: "5432"
             - name: DB_USER
-              value: "casino"
+              valueFrom:
+                configMapKeyRef:
+                  name: casino-config
+                  key: DB_USER
             - name: DB_PASSWORD
-              value: "casino"
+              valueFrom:
+                configMapKeyRef:
+                  name: casino-config
+                  key: DB_PASSWORD
             - name: DB_NAME
-              value: "casino_db"
+              valueFrom:
+                configMapKeyRef:
+                  name: casino-config
+                  key: DB_NAME
+            - name: READY_MAX_MEM_PERCENT
+              value: "90.0"            
+            - name: APUESTAS_N_EVENTOS
+              value: "10"
             - name: JWT_SECRET
               valueFrom:
-               configMapKeyRef:
-                name: casino-config
-                key: JWT_SECRET 
+                configMapKeyRef:
+                  name: casino-config
+                  key: JWT_SECRET 
             - name: CORS_ORIGIN
               value: "*"
           resources:
