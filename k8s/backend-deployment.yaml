@@ -29,7 +29,7 @@ spec:
             - containerPort: 3000
           env:
             - name: DB_HOST
-              value: "db-service"  
+              value: "vidal-casino-db"  
             - name: DB_PORT
               value: "5432"
             - name: DB_USER
