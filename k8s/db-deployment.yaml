@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: casino-db
+  name: vidal-casino-db
   labels:
-    app: casino-db
+    app: vidal-casino-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: casino-db
+      app: vidal-casino-db
   template:
     metadata:
       labels:
-        app: casino-db
+        app: vidal-casino-db
     spec:
       containers:
-        - name: casino-db
+        - name: vidal-casino-db
           image: 631932931672.dkr.ecr.us-east-1.amazonaws.com/vidal-casino-db
           ports:
             - containerPort: 5432
@@ -43,4 +43,4 @@ spec:
     - port: 5432
       targetPort: 5432
   selector:
-    app: casino-db
+    app: vidal-casino-db
