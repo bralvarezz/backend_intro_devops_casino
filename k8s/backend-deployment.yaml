@@ -39,7 +39,10 @@ spec:
             - name: DB_NAME
               value: "casino_db"
             - name: JWT_SECRET
-              value: "clave-secreta-vidal-casino" 
+              valueFrom:
+               configMapKeyRef:
+                name: casino-config
+                key: JWT_SECRET 
             - name: CORS_ORIGIN
               value: "*"
           resources:
