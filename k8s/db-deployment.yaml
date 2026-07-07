@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: casino-db
+  labels:
+    app: casino-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: casino-db
+  template:
+    metadata:
+      labels:
+        app: casino-db
+    spec:
+      containers:
+        - name: casino-db
+          image: 631932931672.dkr.ecr.us-east-1.amazonaws.com/vidal-casino-db
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "casino"
+            - name: POSTGRES_PASSWORD
+              value: "casino" 
+            - name: POSTGRES_DB
+              value: "casino_db"
+          volumeMounts:
+            - name: pg-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: pg-data
+          emptyDir: {} 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: casino-db
